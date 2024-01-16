@@ -38,4 +38,39 @@ export class Database {
       this.#database[table] = [data];
     }
   }
+
+  update(table, id, data) {
+    const findIndexTask = this.#database[table].findIndex(task => task.id === id);
+
+    if(findIndexTask > -1) {
+      const taskOld = this.#database[table][findIndexTask];
+      this.#database[table][findIndexTask] = { id, ...taskOld, ...data };
+      this.#persist()
+    }
+  }
+
+  delete(table, id) {
+    const findIndexTask = this.#database[table].findIndex(task => task.id === id);
+
+    if(findIndexTask > -1) {
+      this.#database[table].splice(findIndexTask, 1);
+      this.#persist();
+    }
+  }
+
+  isComplete(table, id, data) {
+    const findIndexTask = this.#database[table].findIndex(task => task.id === id);
+
+    if(findIndexTask > -1) {
+      const taskOld = this.#database[table][findIndexTask];
+
+      this.#database[table][findIndexTask] = {
+        id,
+        ...taskOld,
+        ...data,
+        completed_at: taskOld.completed_at ? null : data.completed_at,
+      };
+      this.#persist()
+    }
+  }
 }

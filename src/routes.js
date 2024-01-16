@@ -49,21 +49,40 @@ export const routes = [
     method: 'PUT',
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
-      return res.end(JSON.stringify({message: 'PUT TASKS'}))
+      const { id } = req.params; 
+      const { name, description } = req.body;
+      const time = new Date().toISOString()
+
+      database.update(nameTaskTable, id, {
+        name,
+        description,
+        updated_at: time
+      });
+      return res.writeHead(201).end();
     }
   },
   {
     method: 'DELETE',
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
-      return res.end(JSON.stringify({message: 'DELETE TASKS'}))
+      const { id } = req.params;
+
+      database.delete(nameTaskTable, id);
+      return res.writeHead(204).end()
     }
   },
   {
     method: 'PATCH',
     path: buildRoutePath('/tasks/:id/complete'),
     handler: (req, res) => {
-      return res.end(JSON.stringify({message: 'PATCH TASKS'}))
+      const { id } = req.params;
+      const time = new Date().toISOString();
+
+      database.isComplete(nameTaskTable, id, {
+        completed_at: time,
+        updated_at: time,
+      });
+      return res.writeHead(201).end();
     }
   },
 ];
